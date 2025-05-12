@@ -118,6 +118,55 @@ This framework is built on a foundation of aggressive type safety and pure Pydan
 
 Every component in the framework follows this philosophy, ensuring maximum type safety with minimal runtime errors.
 
+## 📊 Data Validation Expression Language
+
+The framework provides a strongly-typed validation system that supports Pandas-style expressions while maintaining type safety. Validation rules use a familiar syntax derived from Pandas expressions but are wrapped in our type-safe validation models.
+
+### Expression Syntax
+
+Validation conditions support the following operations:
+
+| Category | Operations | Example |
+|----------|------------|--------|
+| **Comparison** | `==`, `!=`, `>`, `>=`, `<`, `<=`, `is null`, `is not null` | `age >= 18` |
+| **String** | `.str.contains()`, `.str.startswith()`, `.str.endswith()`, `.str.match()` | `email.str.contains('@')` |
+| **Logical** | `and`, `or`, `not` | `(age >= 18) and (country == 'US')` |
+| **Mathematical** | `+`, `-`, `*`, `/`, `%` | `total_amount == quantity * price` |
+| **Collection** | `in`, `not in` | `status in ['active', 'pending']` |
+
+### Examples with Type Information
+
+| Validation Rule | Purpose | Type-Safety Aspect |
+|-----------------|---------|-------------------|
+| `customer_id is not null` | Ensure required field exists | Auto-casts to proper nullable field |
+| `email.str.contains('@') or email is null` | Allow valid emails or nulls | String-specific methods only apply to string fields |
+| `tenure >= 0` | Enforce non-negative values | Numeric constraint on numeric field |
+| `total_charges >= monthly_charges` | Business rule validation | Numeric comparison with field context |
+| `date_of_birth < current_date()` | Temporal validation | Auto-converts string dates to datetime |
+| `status in ['active', 'pending', 'closed']` | Enumeration validation | Validates against allowed values |
+
+### YAML Configuration Example
+
+```yaml
+validation_rules:
+  - name: "valid_email"
+    condition: "email.str.contains('@') or email is null"
+    severity: "warning"
+    description: "Email should be valid format or null"
+    
+  - name: "adult_age"
+    condition: "age >= 18 or guardian_email is not null"
+    severity: "error"
+    description: "Users under 18 need a guardian email"
+    
+  - name: "pricing_consistency"
+    condition: "total_price == (quantity * unit_price) * (1 - discount_rate)"
+    severity: "error"
+    description: "Total price must match calculation"
+```
+
+Unlike traditional string-based validation, these expressions are parsed and type-checked at runtime, ensuring that string operations are only applied to string fields, numeric operations to numeric fields, etc. This provides the flexibility of expression-based validation with the safety of strong typing.
+
 ## Architecture
 
 ```mermaid
