@@ -325,6 +325,173 @@ class MetricCollector:
     Collects and analyzes model performance metrics.
     """
     
+## Model Serving
+
+The framework provides strongly-typed utilities for interacting with Databricks model serving endpoints.
+
+### Endpoint Configuration
+
+`EndpointConfig` is a Pydantic model for configuring Databricks model serving endpoints with proper type constraints.
+
+```python
+from databricks_mlops.utils.model_serving import EndpointConfig, EndpointType
+
+# Configure endpoint with strong typing
+config = EndpointConfig(
+    endpoint_name="my-model-endpoint",
+    endpoint_type=EndpointType.SERVING,  # Strongly-typed enum
+    model_name="my-registered-model",
+    model_version=1,
+    scale_to_zero_enabled=True,
+    min_instances=1,
+    max_instances=3
+)
+```
+
+### Client Classes
+
+The framework provides specialized, strongly-typed clients for different types of models:
+
+#### Base Model Serving Client
+
+```python
+from databricks_mlops.utils.model_serving import ModelServingClient, EndpointCredentials, AuthType
+
+# Create client with type safety
+client = ModelServingClient(
+    workspace_url="https://my-workspace.databricks.com",
+    credentials=EndpointCredentials(
+        auth_type=AuthType.TOKEN,
+        token="dapi1234567890"
+    )
+)
+
+# Check endpoint status with typed enums
+status = client.get_endpoint_status("my-endpoint-name")
+```
+
+#### Tabular Model Client
+
+For tabular (classification/regression) models:
+
+```python
+from databricks_mlops.utils.model_serving import TabularModelClient
+import pandas as pd
+
+# Create specialized client
+tabular_client = TabularModelClient(
+    workspace_url="https://my-workspace.databricks.com",
+    credentials=credentials
+)
+
+# Make predictions with proper DataFrame typing
+features_df = pd.DataFrame({
+    "feature1": [1.0, 2.0, 3.0],
+    "feature2": ["a", "b", "c"]
+})
+
+# Returns strongly-typed DataFrame
+predictions = tabular_client.predict(
+    endpoint_name="my-tabular-endpoint",
+    features=features_df
+)
+```
+
+#### Text Generation Client
+
+For LLM or text generation models:
+
+```python
+from databricks_mlops.utils.model_serving import TextGenerationClient
+
+# Create specialized client
+text_client = TextGenerationClient(
+    workspace_url="https://my-workspace.databricks.com",
+    credentials=credentials
+)
+
+# Generate text with proper typing
+responses = text_client.generate(
+    endpoint_name="my-llm-endpoint",
+    prompts=["What is MLOps?", "Explain machine learning"],
+    params={
+        "temperature": 0.7,
+        "max_tokens": 100
+    }
+)
+```
+
+#### Image Generation Client
+
+For diffusion or image generation models:
+
+```python
+from databricks_mlops.utils.model_serving import ImageGenerationClient
+
+# Create specialized client
+image_client = ImageGenerationClient(
+    workspace_url="https://my-workspace.databricks.com",
+    credentials=credentials
+)
+
+# Generate images with proper typing
+images = image_client.generate_images(
+    endpoint_name="my-diffusion-endpoint",
+    prompts=["A painting of a sunset", "A photo of mountains"],
+    params={
+        "num_images_per_prompt": 1,
+        "image_width": 512,
+        "image_height": 512
+    }
+)
+```
+
+### Authentication
+
+The framework supports multiple authentication methods with proper type safety:
+
+```python
+from databricks_mlops.utils.model_serving import EndpointCredentials, AuthType
+
+# Token-based authentication
+token_auth = EndpointCredentials(
+    auth_type=AuthType.TOKEN,
+    token="dapi1234567890"
+)
+
+# Service principal authentication
+sp_auth = EndpointCredentials(
+    auth_type=AuthType.SERVICE_PRINCIPAL,
+    client_id="app-id-12345",
+    client_secret="secret-12345",
+    tenant_id="tenant-12345"
+)
+```
+
+### Generic Request/Response Models
+
+The framework provides generic models for handling different types of requests and responses:
+
+```python
+from databricks_mlops.utils.model_serving import PredictionRequest, PredictionResponse
+import pandas as pd
+
+# Create a strongly-typed request
+request = PredictionRequest[pd.DataFrame](
+    inputs=my_dataframe,
+    params={"output_format": "json"}
+)
+
+# Serialize with type safety
+request_dict = request.to_dict()
+
+# Parse response with type safety
+response = PredictionResponse[List[Dict[str, float]]].from_dict(response_data)
+predictions = response.predictions  # Properly typed
+```
+
+For a complete example, see the `examples/model_serving_example.py` file.
+    
     def __init__(self, config: MonitoringConfig):
         self.config = config
         self.logger = setup_logger("metric_collector")
