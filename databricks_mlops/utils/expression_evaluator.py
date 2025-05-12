@@ -14,6 +14,12 @@ import numpy as np
 import pandas as pd
 from pydantic import BaseModel, Field, field_validator
 
+# For backwards compatibility with older Pydantic versions
+try:
+    from pydantic import field_validator  # Pydantic v2
+except ImportError:
+    from pydantic import validator as field_validator  # Pydantic v1
+
 class ExpressionType(Enum):
     """Enumeration of supported expression types with strong typing."""
     COMPARISON = auto()

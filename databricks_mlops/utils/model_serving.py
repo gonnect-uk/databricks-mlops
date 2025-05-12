@@ -14,8 +14,18 @@ from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union, cas
 import numpy as np
 import pandas as pd
 import requests
-from pydantic import BaseModel, Field, field_validator, validator
-from pydantic.generics import GenericModel
+
+# Handle Pydantic v1 and v2 compatibility
+try:
+    from pydantic import BaseModel, Field, field_validator
+    from pydantic.generics import GenericModel
+    # v2 compatibility
+    PYDANTIC_V2 = True
+except ImportError:
+    from pydantic import BaseModel, Field, validator as field_validator
+    from pydantic.generics import GenericModel
+    # v1 compatibility
+    PYDANTIC_V2 = False
 
 from databricks_mlops.utils.logging import setup_logger
 

@@ -32,6 +32,7 @@
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://pypi.org/project/databricks-mlops/)
 [![Type Checking](https://img.shields.io/badge/type%20checking-mypy-brightgreen)]()
 [![Code Style](https://img.shields.io/badge/code%20style-black-black)]()
+[![Version](https://img.shields.io/badge/version-1.0.0-success)]()
 
 </div>
 
@@ -55,6 +56,8 @@ A comprehensive, type-safe MLOps framework for Databricks that follows best prac
 - **Databricks Integration**: Seamless integration with Databricks Delta tables, MLflow, and model serving
 - **Monitoring & Drift Detection**: Built-in components for model monitoring and drift detection
 - **Validation**: Data validation at every step of the ML pipeline
+- **Type-Safe Expression Language**: Pandas-style validation expressions with full type safety
+- **Model Serving**: Strongly-typed clients for Databricks model serving endpoints
 
 ## 💾 Examples
 
@@ -65,6 +68,9 @@ The `examples/` directory contains complete implementations showcasing the frame
 | [**Complete MLOps Pipeline**](examples/complete_mlops_pipeline.py) | End-to-end MLOps pipeline orchestration |
 | [**Customer Churn Prediction**](examples/customer_churn_prediction.py) | Practical implementation of churn prediction model |
 | [**Model Monitoring**](examples/model_monitoring_example.py) | Drift detection and monitoring implementation |
+| [**Model Serving**](examples/model_serving_example.py) | Type-safe Databricks model serving endpoint integration |
+| [**Integrated Serving**](examples/integrated_serving_example.py) | Complete workflow from training to serving with type safety |
+| [**Expression Validation**](examples/expression_validation_example.py) | Type-safe validation expressions with Pandas-style syntax |
 | [**Integration Tests**](examples/integration_test.py) | Tests demonstrating component interactions |
 
 ## 📲 Installation
