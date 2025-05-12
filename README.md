@@ -59,19 +59,22 @@ A comprehensive, type-safe MLOps framework for Databricks that follows best prac
 - **Type-Safe Expression Language**: Pandas-style validation expressions with full type safety
 - **Model Serving**: Strongly-typed clients for Databricks model serving endpoints
 
-## 🌐 Model Serving
+## MLOps Workflow Overview
 
-The framework provides strongly-typed clients for interacting with Databricks model serving endpoints, ensuring type safety throughout the request-response cycle.
+This framework provides end-to-end MLOps capabilities with type safety at every step, following a standardized workflow:
 
-### Supported Model Types
+1. **Data Ingestion & Validation** - Load data with validations using the expression language
+2. **Feature Engineering** - Create and transform features with proper typing
+3. **Model Training** - Train models with MLflow integration and type safety
+4. **Model Deployment** - Deploy models to Databricks model registry
+5. **Model Serving** - Access deployed models through type-safe serving clients
+6. **Model Monitoring** - Track drift and performance with typed metrics
 
-The framework includes specialized clients for different types of models:
+## 🌐 Model Serving for Classical ML
 
-- **TabularModelClient**: For classification and regression models
-- **TextGenerationClient**: For LLMs and text generation models
-- **ImageGenerationClient**: For diffusion and image generation models
+The framework provides strongly-typed clients for interacting with Databricks model serving endpoints, ensuring type safety throughout the request-response cycle. The focus is on classical machine learning tasks like classification and regression.
 
-### Example: Tabular Model Serving
+### Example: Model Serving for Tabular Data
 
 ```python
 from databricks_mlops.utils.model_serving import (
@@ -95,69 +98,30 @@ client = TabularModelClient(
 feature_data = pd.DataFrame({
     "tenure": [12, 24, 36],
     "monthly_charges": [50.0, 70.0, 90.0],
-    "contract_type": ["Month-to-month", "One year", "Two year"]
+    "contract_type": ["Month-to-month", "One year", "Two year"],
+    "total_charges": [600.0, 1680.0, 3240.0]
 })
 
 # Get predictions with full type safety
 predictions = client.predict(
-    endpoint_name="customer-churn-endpoint",
+    endpoint_name="customer-churn-classifier",
     features=feature_data
 )
 
-print(predictions)  # DataFrame with prediction results
-```
-
-### Example: LLM Text Generation
-
-```python
-from databricks_mlops.utils.model_serving import (
-    TextGenerationClient, EndpointCredentials, AuthType
-)
-
-# Initialize the specialized client for text generation
-text_client = TextGenerationClient(
-    workspace_url="https://your-workspace.cloud.databricks.com",
-    credentials=credentials
-)
-
-# Generate text with proper typing
-responses = text_client.generate(
-    endpoint_name="llm-endpoint",
-    prompts=["Explain MLOps in simple terms", "What is type safety?"],
-    params={
-        "temperature": 0.7,
-        "max_tokens": 150
-    }
-)
-
-for prompt, response in zip(["Explain MLOps", "What is type safety?"], responses):
-    print(f"Prompt: {prompt}\nResponse: {response}\n")
+# Process results with proper DataFrame typing
+churn_probabilities = predictions['probability']
+print(f"Predicted churn probability: {churn_probabilities}")
 ```
 
 ### Key Benefits
 
-- **Type Safety**: All interactions with endpoints are type-checked at runtime
-- **Credential Management**: Secure handling of authentication tokens and service principals
-- **Specialized Clients**: Purpose-built clients for different model types
-- **Error Handling**: Robust error handling with informative messages
-- **Retry Logic**: Built-in retry mechanisms for transient failures
-- **Asynchronous Support**: Non-blocking operations for high-throughput scenarios
+- **Type Safety**: All interactions with endpoints maintain proper data types
+- **Credential Management**: Secure handling of authentication tokens
+- **Error Handling**: Detailed error messages with proper typing
+- **Retry Logic**: Smart retries for transient failures
+- **Production Integration**: Seamless connection to production ML endpoints
 
-See the [API Reference](API_REFERENCE.md#model-serving) for complete documentation.
-
-## 💾 Examples
-
-The `examples/` directory contains complete implementations showcasing the framework:
-
-| Example | Description |
-|---------|-------------|
-| [**Complete MLOps Pipeline**](examples/complete_mlops_pipeline.py) | End-to-end MLOps pipeline orchestration |
-| [**Customer Churn Prediction**](examples/customer_churn_prediction.py) | Practical implementation of churn prediction model |
-| [**Model Monitoring**](examples/model_monitoring_example.py) | Drift detection and monitoring implementation |
-| [**Model Serving**](examples/model_serving_example.py) | Type-safe Databricks model serving endpoint integration |
-| [**Integrated Serving**](examples/integrated_serving_example.py) | Complete workflow from training to serving with type safety |
-| [**Expression Validation**](examples/expression_validation_example.py) | Type-safe validation expressions with Pandas-style syntax |
-| [**Integration Tests**](examples/integration_test.py) | Tests demonstrating component interactions |
+For more advanced usage, including batch predictions and custom model types, see the [API Reference](API_REFERENCE.md#model-serving).
 
 ## 📲 Installation
 
@@ -177,6 +141,10 @@ uv pip install -e .
 
 # Install with all dependencies
 uv pip install "databricks-mlops[all]"
+
+# Install specific components
+uv pip install "databricks-mlops[data,feature-engineering,model-training]"  # ML components
+uv pip install "databricks-mlops[deployment,monitoring]"  # Production components
 ```
 
 You can also use traditional pip if uv is not available:
@@ -185,16 +153,19 @@ You can also use traditional pip if uv is not available:
 pip install databricks-mlops
 ```
 
-## Overview
+## 💾 Examples
 
-This framework provides a standardized approach to machine learning operations on Databricks, incorporating:
+The `examples/` directory contains practical implementations showcasing the framework:
 
-- Strong typing with Pydantic models
-- End-to-end ML pipeline automation
-- Built-in monitoring and data quality checks
-- Comprehensive CI/CD integration
-- Multi-environment deployment orchestration
-- Artifact management and versioning
+| Example | Description |
+|---------|-------------|
+| [**Complete MLOps Pipeline**](examples/complete_mlops_pipeline.py) | End-to-end MLOps pipeline orchestration |
+| [**Customer Churn Prediction**](examples/customer_churn_prediction.py) | Practical implementation of churn prediction model |
+| [**Model Monitoring**](examples/model_monitoring_example.py) | Drift detection and monitoring implementation |
+| [**Model Serving**](examples/model_serving_example.py) | Type-safe Databricks model serving endpoint integration |
+| [**Integrated Serving**](examples/integrated_serving_example.py) | Complete workflow from training to serving with type safety |
+| [**Expression Validation**](examples/expression_validation_example.py) | Type-safe validation expressions with Pandas-style syntax |
+| [**Integration Tests**](examples/integration_test.py) | Tests demonstrating component interactions |
 
 ## 🔐 Type Safety Philosophy
 
