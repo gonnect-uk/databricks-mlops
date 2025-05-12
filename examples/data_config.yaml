@@ -1,0 +1,45 @@
+name: customer_churn_data_pipeline
+description: "Data pipeline for customer churn prediction model"
+owner: "data_engineer@example.com"
+tags:
+  domain: customer_analytics
+  project: churn_prediction
+  environment: development
+timeout_minutes: 60
+retry_attempts: 3
+environment: development
+
+data_config:
+  source_path: "dbfs:/mnt/raw-data/customer_data.parquet"
+  destination_path: "dbfs:/mnt/silver/customer_data_processed"
+  table_name: "customer_data_processed"
+  format: "delta"
+  partition_columns: 
+    - "country"
+    - "subscription_type"
+  validation_rules:
+    - name: "no_missing_ids"
+      condition: "customer_id is not null"
+      severity: "error"
+      description: "Customer ID should never be null"
+    - name: "valid_email"
+      condition: "email.str.contains('@') or email is null"
+      severity: "warning"
+      description: "Email should be valid format"
+    - name: "positive_tenure"
+      condition: "tenure >= 0"
+      severity: "error"
+      description: "Tenure cannot be negative"
+    - "monthly_charges > 0"
+    - "total_charges >= monthly_charges"
+  options:
+    mergeSchema: "true"
+    overwriteSchema: "false"
+  database_config:
+    catalog: "main"
+    schema: "analytics"
+    warehouse_id: "${DATABRICKS_WAREHOUSE_ID}"
+    connection_parameters:
+      spark.databricks.delta.optimizeWrite: "true"
+      spark.databricks.delta.autoCompact: "true"
+    timeout_seconds: 120

@@ -1,0 +1,41 @@
+name: customer_churn_feature_pipeline
+description: "Feature engineering pipeline for customer churn prediction model"
+owner: "data_scientist@example.com"
+tags:
+  domain: customer_analytics
+  project: churn_prediction
+  environment: development
+timeout_minutes: 45
+retry_attempts: 2
+environment: development
+
+feature_config:
+  source_table: "main.analytics.customer_data_processed"
+  feature_table_name: "customer_churn_features"
+  primary_keys: 
+    - "customer_id"
+  features:
+    - "tenure"
+    - "monthly_charges"
+    - "total_charges"
+    - "contract_type"
+    - "payment_method"
+    - "subscription_type"
+    - "online_security"
+    - "tech_support"
+    - "streaming_tv"
+    - "streaming_movies"
+    - "gender"
+    - "senior_citizen"
+    - "partner"
+    - "dependents"
+  timestamp_column: "last_update_time"
+  partition_columns:
+    - "subscription_type"
+  description: "Feature table for customer churn prediction including service usage and demographic features"
+  tags:
+    owner: "data_science_team"
+    version: "1.0.0"
+    purpose: "churn_prediction"
+  online_store_enabled: true
+  offline_store_path: "dbfs:/mnt/gold/feature_store/customer_churn_features"

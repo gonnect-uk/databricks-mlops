@@ -1,0 +1,51 @@
+name: customer_churn_training_pipeline
+description: "Model training pipeline for customer churn prediction"
+owner: "data_scientist@example.com"
+tags:
+  domain: customer_analytics
+  project: churn_prediction
+  environment: development
+timeout_minutes: 120
+retry_attempts: 2
+environment: development
+
+model_config:
+  model_name: "customer_churn_predictor"
+  model_type: "classification"
+  hyperparameters:
+    n_estimators: 100
+    max_depth: 10
+    min_samples_split: 5
+    min_samples_leaf: 2
+    bootstrap: true
+    class_weight: "balanced"
+    random_state: 42
+    n_jobs: -1
+  features:
+    - "tenure_scaled"
+    - "monthly_charges_scaled"
+    - "total_charges_scaled"
+    - "contract_type_encoded"
+    - "payment_method_encoded"
+    - "subscription_type_encoded"
+    - "online_security_encoded"
+    - "tech_support_encoded"
+    - "streaming_services_encoded"
+    - "gender_encoded"
+    - "senior_citizen"
+    - "family_size"
+  target_column: "churned"
+  train_data_path: "dbfs:/mnt/gold/feature_store/customer_churn_features/train"
+  validation_data_path: "dbfs:/mnt/gold/feature_store/customer_churn_features/validation" 
+  test_data_path: "dbfs:/mnt/gold/feature_store/customer_churn_features/test"
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1"
+    - "roc_auc"
+  autologging_enabled: true
+  register_model: true
+  save_artifacts: true
+  max_parallel_trials: 10
+  timeout_minutes: 60

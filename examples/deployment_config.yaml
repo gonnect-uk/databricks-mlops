@@ -1,0 +1,32 @@
+name: customer_churn_deployment_pipeline
+description: "Model deployment pipeline for customer churn prediction"
+owner: "mlops_engineer@example.com"
+tags:
+  domain: customer_analytics
+  project: churn_prediction
+  environment: staging
+timeout_minutes: 30
+retry_attempts: 3
+environment: staging
+
+deployment_config:
+  model_name: "customer_churn_predictor"
+  model_version: "1"
+  environment: "staging"
+  deployment_type: "serving_endpoint"
+  endpoint_name: "customer-churn-predictor"
+  compute_type: "cpu"
+  compute_scale: 2
+  min_replicas: 1
+  max_replicas: 5
+  autoscaling_enabled: true
+  enable_access_control: true
+  timeout_seconds: 300
+  tags:
+    purpose: "churn_prediction"
+    team: "customer_analytics"
+    version: "1.0.0"
+  environment_variables:
+    LOG_LEVEL: "INFO"
+    ENABLE_MONITORING: "true"
+    RATE_LIMITING: "100"
