@@ -39,6 +39,49 @@
 
 A comprehensive, type-safe MLOps framework for Databricks that follows best practices for the end-to-end machine learning lifecycle. The framework emphasizes type safety, modularity, and automated MLOps processes.
 
+## 📚 Documentation
+
+| Document | Description |
+|----------|-------------|
+| [**API Reference**](API_REFERENCE.md) | Comprehensive API reference for all framework components |
+| [**Usage Guide**](USAGE_GUIDE.md) | Step-by-step guide to using the framework with examples |
+| [**Architecture Overview**](ARCHITECTURE.md) | Detailed architecture and design principles |
+
+## 🔍 Key Features
+
+- **Strong Type Safety**: Built from the ground up with Pydantic models and Python type annotations
+- **Modular Pipeline Components**: Standardized interfaces for data, feature, training, deployment, and monitoring pipelines
+- **Configuration-Driven**: All behavior controlled through strongly-typed YAML configurations
+- **Databricks Integration**: Seamless integration with Databricks Delta tables, MLflow, and model serving
+- **Monitoring & Drift Detection**: Built-in components for model monitoring and drift detection
+- **Validation**: Data validation at every step of the ML pipeline
+
+## 💾 Examples
+
+The `examples/` directory contains complete implementations showcasing the framework:
+
+| Example | Description |
+|---------|-------------|
+| [**Complete MLOps Pipeline**](examples/complete_mlops_pipeline.py) | End-to-end MLOps pipeline orchestration |
+| [**Customer Churn Prediction**](examples/customer_churn_prediction.py) | Practical implementation of churn prediction model |
+| [**Model Monitoring**](examples/model_monitoring_example.py) | Drift detection and monitoring implementation |
+| [**Integration Tests**](examples/integration_test.py) | Tests demonstrating component interactions |
+
+## 📲 Installation
+
+```bash
+# From PyPI
+pip install databricks-mlops
+
+# From GitHub
+pip install git+https://github.com/gonnect-uk/databricks-mlops.git
+
+# Development installation
+git clone https://github.com/gonnect-uk/databricks-mlops.git
+cd databricks-mlops
+pip install -e .
+```
+
 ## Overview
 
 This framework provides a standardized approach to machine learning operations on Databricks, incorporating:
@@ -49,6 +92,20 @@ This framework provides a standardized approach to machine learning operations o
 - Comprehensive CI/CD integration
 - Multi-environment deployment orchestration
 - Artifact management and versioning
+
+## 🔐 Type Safety Philosophy
+
+This framework is built on a foundation of aggressive type safety and pure Pydantic models:
+
+- **No Direct JSON Handling**: All data structures are proper Pydantic models
+- **No String Manipulation**: Proper type casting and validation instead of string parsing
+- **No `hasattr()` Checks**: Explicit model attributes with proper defaults
+- **Domain-Driven Design**: Components map directly to MLOps domain concepts
+- **Specialized Exceptions**: Clear error types instead of generic exceptions
+- **Functional Approach**: Helper methods and immutable data where possible
+- **Robust Fallbacks**: Proper default values and clear error handling
+
+Every component in the framework follows this philosophy, ensuring maximum type safety with minimal runtime errors.
 
 ## Architecture
 
