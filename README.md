@@ -59,6 +59,92 @@ A comprehensive, type-safe MLOps framework for Databricks that follows best prac
 - **Type-Safe Expression Language**: Pandas-style validation expressions with full type safety
 - **Model Serving**: Strongly-typed clients for Databricks model serving endpoints
 
+## 🌐 Model Serving
+
+The framework provides strongly-typed clients for interacting with Databricks model serving endpoints, ensuring type safety throughout the request-response cycle.
+
+### Supported Model Types
+
+The framework includes specialized clients for different types of models:
+
+- **TabularModelClient**: For classification and regression models
+- **TextGenerationClient**: For LLMs and text generation models
+- **ImageGenerationClient**: For diffusion and image generation models
+
+### Example: Tabular Model Serving
+
+```python
+from databricks_mlops.utils.model_serving import (
+    TabularModelClient, EndpointCredentials, AuthType
+)
+import pandas as pd
+
+# Create strongly-typed credentials
+credentials = EndpointCredentials(
+    auth_type=AuthType.TOKEN,
+    token="your-databricks-token"
+)
+
+# Initialize the client with proper typing
+client = TabularModelClient(
+    workspace_url="https://your-workspace.cloud.databricks.com",
+    credentials=credentials
+)
+
+# Prepare feature data with correct types
+feature_data = pd.DataFrame({
+    "tenure": [12, 24, 36],
+    "monthly_charges": [50.0, 70.0, 90.0],
+    "contract_type": ["Month-to-month", "One year", "Two year"]
+})
+
+# Get predictions with full type safety
+predictions = client.predict(
+    endpoint_name="customer-churn-endpoint",
+    features=feature_data
+)
+
+print(predictions)  # DataFrame with prediction results
+```
+
+### Example: LLM Text Generation
+
+```python
+from databricks_mlops.utils.model_serving import (
+    TextGenerationClient, EndpointCredentials, AuthType
+)
+
+# Initialize the specialized client for text generation
+text_client = TextGenerationClient(
+    workspace_url="https://your-workspace.cloud.databricks.com",
+    credentials=credentials
+)
+
+# Generate text with proper typing
+responses = text_client.generate(
+    endpoint_name="llm-endpoint",
+    prompts=["Explain MLOps in simple terms", "What is type safety?"],
+    params={
+        "temperature": 0.7,
+        "max_tokens": 150
+    }
+)
+
+for prompt, response in zip(["Explain MLOps", "What is type safety?"], responses):
+    print(f"Prompt: {prompt}\nResponse: {response}\n")
+```
+
+### Key Benefits
+
+- **Type Safety**: All interactions with endpoints are type-checked at runtime
+- **Credential Management**: Secure handling of authentication tokens and service principals
+- **Specialized Clients**: Purpose-built clients for different model types
+- **Error Handling**: Robust error handling with informative messages
+- **Retry Logic**: Built-in retry mechanisms for transient failures
+- **Asynchronous Support**: Non-blocking operations for high-throughput scenarios
+
+See the [API Reference](API_REFERENCE.md#model-serving) for complete documentation.
+
 ## 💾 Examples
 
 The `examples/` directory contains complete implementations showcasing the framework:
