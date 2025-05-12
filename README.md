@@ -69,17 +69,28 @@ The `examples/` directory contains complete implementations showcasing the frame
 
 ## 📲 Installation
 
+We recommend using [uv](https://github.com/astral-sh/uv) for faster, more reliable Python package management:
+
 ```bash
 # From PyPI
-pip install databricks-mlops
+uv pip install databricks-mlops
 
 # From GitHub
-pip install git+https://github.com/gonnect-uk/databricks-mlops.git
+uv pip install git+https://github.com/gonnect-uk/databricks-mlops.git
 
 # Development installation
 git clone https://github.com/gonnect-uk/databricks-mlops.git
 cd databricks-mlops
-pip install -e .
+uv pip install -e .
+
+# Install with all dependencies
+uv pip install "databricks-mlops[all]"
+```
+
+You can also use traditional pip if uv is not available:
+
+```bash
+pip install databricks-mlops
 ```
 
 ## Overview

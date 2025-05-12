@@ -2,6 +2,39 @@
 
 This document provides a comprehensive reference for the strongly-typed components of the Databricks MLOps framework.
 
+## Installation and Package Extras
+
+The framework is optimized for installation with [uv](https://github.com/astral-sh/uv), a modern Python package installer that offers significant speed and reliability improvements:
+
+```bash
+# Install core framework
+uv pip install databricks-mlops
+
+# Install with specific extras based on your needs
+uv pip install "databricks-mlops[ml]"         # Feature engineering and model training components
+uv pip install "databricks-mlops[databricks]"  # Databricks integration
+uv pip install "databricks-mlops[production]"  # Monitoring and deployment components
+uv pip install "databricks-mlops[all]"         # All components
+```
+
+Available extras:
+
+| Extra | Description |
+|-------|-------------|
+| `data` | Data validation components using Great Expectations |
+| `feature-engineering` | Feature transformation and encoding |
+| `model-training` | Model training with MLflow integration |
+| `drift-detection` | Statistical drift detection capabilities |
+| `databricks` | Databricks integration components |
+| `api` | FastAPI-based model serving components |
+| `monitoring` | Prometheus metrics and Grafana dashboards |
+| `deployment` | Deployment to Databricks endpoints |
+| `ml` | Combined ML extras (feature-engineering, model-training, drift-detection) |
+| `production` | Combined production extras (monitoring, deployment, databricks, api) |
+| `all` | All components |
+
+These extras follow our strict type-safe philosophy, ensuring that each component maintains strong typing and Pydantic models throughout.
+
 ## Table of Contents
 
 - [Core Components](#core-components)

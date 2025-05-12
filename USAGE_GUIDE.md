@@ -17,16 +17,29 @@ This guide provides practical examples of using the MLOps framework for Databric
 
 ## Installation
 
-Install the framework using pip:
+We recommend installing the framework using [uv](https://github.com/astral-sh/uv), a modern Python package installer that's significantly faster and more reliable than traditional pip:
+
+```bash
+# Install uv if you don't have it yet
+curl -sSf https://astral.sh/uv/install.sh | bash
+
+# Install from PyPI
+uv pip install databricks-mlops
+
+# Or install directly from the repository
+uv pip install git+https://github.com/gonnect-uk/databricks-mlops.git
+
+# Install with specific extras
+uv pip install "databricks-mlops[monitoring,deployment]"
+
+# Install all extras
+uv pip install "databricks-mlops[all]"
+```
+
+If you prefer using traditional pip:
 
 ```bash
 pip install databricks-mlops
-```
-
-Or directly from the repository:
-
-```bash
-pip install git+https://github.com/yourusername/databricks-mlops.git
 ```
 
 ## Quick Start
