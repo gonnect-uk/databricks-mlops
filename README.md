@@ -1,4 +1,41 @@
+<div align="center">
+
+```
+       ████████╗██╗   ██╗██████╗ ███████╗███████╗ █████╗ ███████╗███████╗       
+      ╚══██╔══╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔════╝██╔══██╗██╔════╝██╔════╝       
+         ██║    ╚████╔╝ ██████╔╝█████╗  ███████╗███████║█████╗  █████╗         
+         ██║     ╚██╔╝  ██╔═══╝ ██╔══╝  ╚════██║██╔══██║██╔══╝  ██╔══╝         
+         ██║      ██║   ██║     ███████╗███████║██║  ██║██║     ███████╗       
+         ╚═╝      ╚═╝   ╚═╝     ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝     ╚══════╝       
+                                                                               
+██████╗  █████╗ ████████╗ █████╗ ██████╗ ██████╗ ██╗ ██████╗██╗  ██╗███████╗   
+██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔══██╗██╔══██╗██║██╔════╝██║ ██╔╝██╔════╝   
+██║  ██║███████║   ██║   ███████║██████╔╝██████╔╝██║██║     █████╔╝ ███████╗   
+██║  ██║██╔══██║   ██║   ██╔══██║██╔══██╗██╔══██╗██║██║     ██╔═██╗ ╚════██║   
+██████╔╝██║  ██║   ██║   ██║  ██║██████╔╝██║  ██║██║╚██████╗██║  ██╗███████║   
+╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝   
+                                                                               
+    ███╗   ███╗██╗      ██████╗ ██████╗ ███████╗                               
+    ████╗ ████║██║     ██╔═══██╗██╔══██╗██╔════╝                               
+    ██╔████╔██║██║     ██║   ██║██████╔╝███████╗                               
+    ██║╚██╔╝██║██║     ██║   ██║██╔═══╝ ╚════██║                               
+    ██║ ╚═╝ ██║███████╗╚██████╔╝██║     ███████║                               
+    ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝     ╚══════╝                               
+```
+
 # Databricks MLOps Framework
+
+### A strongly-typed, Pydantic-based MLOps framework for production ML on Databricks
+
+[![License](https://img.shields.io/github/license/gonnect-uk/databricks-mlops)](https://github.com/gonnect-uk/databricks-mlops/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/gonnect-uk/databricks-mlops)](https://github.com/gonnect-uk/databricks-mlops/stargazers)
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://pypi.org/project/databricks-mlops/)
+[![Type Checking](https://img.shields.io/badge/type%20checking-mypy-brightgreen)]()
+[![Code Style](https://img.shields.io/badge/code%20style-black-black)]()
+
+</div>
+
+## Overview
 
 A comprehensive, type-safe MLOps framework for Databricks that follows best practices for the end-to-end machine learning lifecycle. The framework emphasizes type safety, modularity, and automated MLOps processes.
 
