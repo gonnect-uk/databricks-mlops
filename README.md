@@ -40,6 +40,121 @@
 
 A comprehensive, type-safe MLOps framework for Databricks that follows best practices for the end-to-end machine learning lifecycle. The framework emphasizes type safety, modularity, and automated MLOps processes.
 
+## Getting Started
+
+### Installation
+
+The framework can be installed using `uv` (recommended) or `pip`:
+
+```bash
+# Install using uv (recommended)
+uv pip install databricks-mlops
+
+# Install specific components
+uv pip install 'databricks-mlops[data,feature-engineering,model-training]'
+
+# Install with all components
+uv pip install 'databricks-mlops[all]'
+```
+
+### Quick Start
+
+Here's a simple example to get started with the framework:
+
+```python
+from databricks_mlops.pipelines import MLOpsWorkflow
+from databricks_mlops.models.config import (
+    DataConfig, FeatureConfig, TrainingConfig, DeploymentConfig
+)
+
+# Load configurations from YAML files
+data_config = DataConfig.from_yaml("configs/data_config.yaml")
+feature_config = FeatureConfig.from_yaml("configs/feature_config.yaml")
+training_config = TrainingConfig.from_yaml("configs/training_config.yaml")
+deployment_config = DeploymentConfig.from_yaml("configs/deployment_config.yaml")
+
+# Create and run an end-to-end workflow
+workflow = MLOpsWorkflow(
+    data_config=data_config,
+    feature_config=feature_config,
+    training_config=training_config,
+    deployment_config=deployment_config
+)
+
+# Execute the complete workflow
+workflow.run()
+```
+
+### Project Setup
+
+Typical project structure:
+
+```
+my-mlops-project/
+├── configs/
+│   ├── data_config.yaml       # Data ingestion and validation config
+│   ├── feature_config.yaml    # Feature engineering config
+│   ├── training_config.yaml   # Model training config
+│   ├── deployment_config.yaml # Model deployment config
+│   └── monitoring_config.yaml # Model monitoring config
+├── notebooks/
+│   └── development.py         # Development notebooks
+├── pipeline/
+│   ├── ingest.py              # Data ingestion script
+│   ├── features.py            # Feature engineering script
+│   ├── train.py               # Model training script
+│   └── deploy.py              # Deployment script
+├── tests/
+│   └── test_pipeline.py       # Unit and integration tests
+└── README.md                  # Project documentation
+```
+
+### Integration with Databricks
+
+Connect to your Databricks workspace:
+
+```python
+from databricks_mlops.utils.auth import WorkspaceConfig, DatabricksClient
+
+# Create a type-safe workspace configuration
+workspace_config = WorkspaceConfig(
+    host="https://your-workspace.cloud.databricks.com",
+    token="dapi123456789"  # Better to use environment variables
+)
+
+# Create a client with proper type checking
+client = DatabricksClient(workspace_config)
+
+# Now you can interact with Databricks services
+dbfs_files = client.dbfs.list("/path/to/data")
+print(f"Found {len(dbfs_files)} files")
+```
+
+### Automation and CI/CD
+
+The framework supports CI/CD pipelines using Databricks access bundles:
+
+```python
+from databricks_mlops.utils.auth import AccessBundleCredentials
+from databricks_mlops.utils.deployment import DeploymentManager
+from databricks_mlops.models.config import DeploymentConfig
+
+# Load credentials from access bundle
+credentials = AccessBundleCredentials.from_bundle_file("access-bundle.yaml")
+
+# Load deployment configuration
+config = DeploymentConfig.from_yaml("configs/deployment_config.yaml")
+
+# Create deployment manager with proper authentication
+manager = DeploymentManager(credentials=credentials)
+
+# Deploy the model with type safety throughout
+deployment_id = manager.deploy(config)
+print(f"Deployment ID: {deployment_id}")
+```
+
+For more detailed usage examples, see the [Usage Guide](USAGE_GUIDE.md) and [API Reference](API_REFERENCE.md).
+
 ## 📚 Documentation
 
 | Document | Description |
