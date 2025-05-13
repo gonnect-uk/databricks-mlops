@@ -70,7 +70,80 @@ This framework provides end-to-end MLOps capabilities with type safety at every 
 5. **Model Serving** - Access deployed models through type-safe serving clients
 6. **Model Monitoring** - Track drift and performance with typed metrics
 
-## 🌐 Model Serving for Classical ML
+## 📊 Data Ingestion & Validation
+
+The framework provides a strongly-typed validation system that supports Pandas-style expressions while maintaining type safety. Validation rules use a familiar syntax derived from Pandas expressions but are wrapped in our type-safe validation models.
+
+### Expression Syntax
+
+Validation conditions support the following operations:
+
+| Category | Operations | Example |
+|----------|------------|--------|
+| **Comparison** | `==`, `!=`, `>`, `>=`, `<`, `<=`, `is null`, `is not null` | `age >= 18` |
+| **String** | `.str.contains()`, `.str.startswith()`, `.str.endswith()`, `.str.match()` | `email.str.contains('@')` |
+| **Logical** | `and`, `or`, `not` | `(age >= 18) and (country == 'US')` |
+| **Mathematical** | `+`, `-`, `*`, `/`, `%` | `total_amount == quantity * price` |
+| **Collection** | `in`, `not in` | `status in ['active', 'pending']` |
+
+### Examples with Type Information
+
+| Validation Rule | Purpose | Type-Safety Aspect |
+|-----------------|---------|-------------------|
+| `customer_id is not null` | Ensure required field exists | Auto-casts to proper nullable field |
+| `email.str.contains('@') or email is null` | Allow valid emails or nulls | String-specific methods only apply to string fields |
+| `tenure >= 0` | Enforce non-negative values | Numeric constraint on numeric field |
+| `total_charges >= monthly_charges` | Business rule validation | Numeric comparison with field context |
+| `date_of_birth < current_date()` | Temporal validation | Auto-converts string dates to datetime |
+| `status in ['active', 'pending', 'closed']` | Enumeration validation | Validates against allowed values |
+
+### YAML Configuration Example
+
+```yaml
+validation_rules:
+  - name: "valid_email"
+    condition: "email.str.contains('@') or email is null"
+    severity: "warning"
+    description: "Email should be valid format or null"
+    
+  - name: "adult_age"
+    condition: "age >= 18 or guardian_email is not null"
+    severity: "error"
+    description: "Users under 18 need a guardian email"
+    
+  - name: "pricing_consistency"
+    condition: "total_price == (quantity * unit_price) * (1 - discount_rate)"
+    severity: "error"
+    description: "Total price must match calculation"
+```
+
+Unlike traditional string-based validation, these expressions are parsed and type-checked at runtime, ensuring that string operations are only applied to string fields, numeric operations to numeric fields, etc. This provides the flexibility of expression-based validation with the safety of strong typing.
+
+## 🧬 Feature Engineering
+
+The framework provides strongly-typed components for feature engineering, ensuring type safety throughout the transformation process. Features can be created, transformed, and validated with proper typing.
+
+Key capabilities include:
+- Strongly-typed feature transformers
+- Type-safe feature pipelines
+- Pydantic models for feature configurations
+- Integration with Databricks Feature Store
+
+## 🧠 Model Training
+
+Model training components ensure type safety while integrating seamlessly with MLflow for experiment tracking and model management. The framework provides typed interfaces for training configuration, hyperparameter tuning, and model evaluation.
+
+Key capabilities include:
+- Type-safe model training pipelines
+- Strongly-typed experiment tracking
+- MLflow integration with proper typing
+- Cross-validation with type safety
+
+## 🚀 Model Deployment
+
+The framework provides type-safe deployment of models to Databricks Model Registry and serving endpoints. Deployment configurations are validated with Pydantic models, ensuring all required fields are present and properly typed.
+
+## 🌐 Model Serving
 
 The framework provides strongly-typed clients for interacting with Databricks model serving endpoints, ensuring type safety throughout the request-response cycle. The focus is on classical machine learning tasks like classification and regression.
 
@@ -121,7 +194,17 @@ print(f"Predicted churn probability: {churn_probabilities}")
 - **Retry Logic**: Smart retries for transient failures
 - **Production Integration**: Seamless connection to production ML endpoints
 
-For more advanced usage, including batch predictions and custom model types, see the [API Reference](API_REFERENCE.md#model-serving).
+## 📈 Model Monitoring
+
+The framework provides type-safe monitoring for deployed models, tracking drift in data and predictions, as well as model performance metrics. Monitoring configurations are validated with Pydantic models, ensuring proper typing throughout.
+
+Key capabilities include:
+- Data drift detection with type safety
+- Model performance tracking
+- Alerting with proper validation
+- Integration with Databricks monitoring tools
+
+For more advanced usage of any component, see the [API Reference](API_REFERENCE.md) for complete documentation.
 
 ## 📲 Installation
 
