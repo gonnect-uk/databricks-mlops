@@ -101,7 +101,45 @@ jobs:
             --access-bundle access-bundle.yaml
 ```
 
-## Access Bundle Management
+## Access Bundle Concepts
+
+### What Are Access Bundles?
+
+Databricks Access Bundles are secure, reusable credential packages that provide service-to-service authentication for Databricks resources. They solve several key challenges in MLOps workflows:
+
+1. **Secure Automation**: Enable service identities to interact with Databricks without human tokens
+2. **Principle of Least Privilege**: Grant precisely the permissions needed for each operation
+3. **Environment Isolation**: Separate credentials for development, staging, and production
+4. **Token Management**: Eliminate hardcoded credentials in code or configuration files
+5. **Fine-grained Access Control**: Access only specific catalogs, schemas, and operations
+
+### How Access Bundles Work
+
+Access bundles use Databricks service principals and Unity Catalog to create secure authentication packages:
+
+1. **Service Principal Creation**: Each access bundle uses a service principal identity
+2. **Scope Definition**: Permissions are specified for Unity Catalog resources, workspace assets, etc.
+3. **Token Generation**: A secure token is generated for the service principal
+4. **Configuration Package**: The token and metadata are packaged into a portable YAML file
+5. **Secret Management**: The bundle can be stored in CI/CD secrets or secure vaults
+
+### Access Bundle Architecture
+
+```
+┌───────────────────┐     ┌────────────────────┐     ┌───────────────────┐
+│  DevOps/CI Tool   │     │  Access Bundle     │     │    Databricks     │
+│  (GitHub Actions) │────▶│  Configuration     │────▶│    Workspace      │
+│                   │     │  (YAML)            │     │                   │
+└───────────────────┘     └────────────────────┘     └───────────────────┘
+                                     │                         ▲
+                                     │                         │
+                                     ▼                         │
+                           ┌────────────────────┐             │
+                           │  Service Principal │             │
+                           │  Identity          │─────────────┘
+                           │                    │
+                           └────────────────────┘
+```
 
 ### Creating Access Bundles
 
@@ -121,6 +159,16 @@ databricks access-bundles permissions add \
   --scope model_registry \
   --permission WRITE
 ```
+
+### Security Model
+
+Access bundles follow these security principles:
+
+1. **Zero Trust**: Each bundle has only the permissions explicitly granted
+2. **Time-Limited**: Tokens have expiration dates and can be rotated
+3. **Audit Trail**: All actions performed with access bundles are logged
+4. **Revocable**: Bundles can be invalidated immediately if compromised
+5. **Least Privilege**: Only grant the minimum permissions needed
 
 ### Rotating Credentials
 
