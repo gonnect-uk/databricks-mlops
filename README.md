@@ -38,13 +38,9 @@
 
 ## Overview
 
-A comprehensive, type-safe MLOps framework for Databricks that follows best practices for the end-to-end machine learning lifecycle. The framework emphasizes type safety, modularity, and automated MLOps processes.
+A comprehensive, type-safe MLOps framework for Databricks that follows best practices for the end-to-end machine learning lifecycle. Built on Pydantic models and strong Python typing, this framework provides a reliable foundation for production ML systems on the Databricks platform.
 
-## Getting Started
-
-### Installation
-
-The framework can be installed using `uv` (recommended) or `pip`:
+## Installation
 
 ```bash
 # Install using uv (recommended)
@@ -53,28 +49,71 @@ uv pip install databricks-mlops
 # Install specific components
 uv pip install 'databricks-mlops[data,feature-engineering,model-training]'
 
-# Install with all components
+# Install all components
 uv pip install 'databricks-mlops[all]'
 ```
 
-### Quick Start
+## MLOps Workflow
 
-Here's a simple example to get started with the framework:
+This framework provides an end-to-end MLOps workflow with strong type safety at every step:
+
+1. **Data Ingestion & Validation** - Load data with type-safe validation rules
+2. **Feature Engineering** - Transform features with proper typing
+3. **Model Training** - Train models with MLflow integration
+4. **Model Deployment** - Deploy to Databricks model registry
+5. **Model Serving** - Access models through typed clients
+6. **Model Monitoring** - Track drift and performance
+7. **CI/CD Automation** - Automate with Databricks access bundles
+
+Each component is built on Pydantic models for complete type safety and validation.
+
+## 📚 Documentation
+
+| Document | Description |
+|----------|-------------|
+| [**Usage Guide**](USAGE_GUIDE.md) | Step-by-step guide with practical examples |
+| [**API Reference**](API_REFERENCE.md) | Comprehensive reference for all components |
+| [**Architecture**](ARCHITECTURE.md) | Design principles and technical architecture |
+| [**Deployment**](docs/DEPLOYMENT.md) | Model deployment and management |
+| [**Model Serving**](docs/MODEL_SERVING.md) | Accessing deployed models securely |
+| [**Automation**](docs/AUTOMATION.md) | CI/CD pipelines and workflows |
+| [**Access Bundles**](docs/ACCESS_BUNDLES.md) | Secure authentication for automation |
+
+## 🔍 Key Features
+
+- **Complete Type Safety** - Pydantic models throughout the entire ML lifecycle
+- **Configuration-Driven** - YAML-based configuration with schema validation
+- **Databricks Integration** - Seamless connectivity with MLflow, Delta, and Unity Catalog
+- **Expression Language** - Type-safe validation expressions (e.g., `email.str.contains('@') or email is null`)
+- **Flexible Deployment** - Multi-environment model deployment with blue-green patterns
+- **Secure Automation** - CI/CD integration with Databricks access bundles
+- **Production Monitoring** - Drift detection and performance tracking
+- **Model Registry Integration** - Version control and model governance
+
+## Quick Start
 
 ```python
 from databricks_mlops.pipelines import MLOpsWorkflow
 from databricks_mlops.models.config import (
     DataConfig, FeatureConfig, TrainingConfig, DeploymentConfig
 )
+from databricks_mlops.utils.auth import WorkspaceConfig
 
-# Load configurations from YAML files
+# Create workspace configuration
+workspace = WorkspaceConfig(
+    host="https://your-workspace.cloud.databricks.com",
+    token="${DATABRICKS_TOKEN}"  # Using environment variable
+)
+
+# Load typed configurations from YAML
 data_config = DataConfig.from_yaml("configs/data_config.yaml")
 feature_config = FeatureConfig.from_yaml("configs/feature_config.yaml")
 training_config = TrainingConfig.from_yaml("configs/training_config.yaml")
 deployment_config = DeploymentConfig.from_yaml("configs/deployment_config.yaml")
 
-# Create and run an end-to-end workflow
+# Create end-to-end workflow with type safety
 workflow = MLOpsWorkflow(
+    workspace=workspace,
     data_config=data_config,
     feature_config=feature_config,
     training_config=training_config,
@@ -82,222 +121,228 @@ workflow = MLOpsWorkflow(
 )
 
 # Execute the complete workflow
-workflow.run()
+results = workflow.run()
+print(f"Model deployed with ID: {results.model_id}, version: {results.version}")
 ```
-
-### Project Setup
-
-Typical project structure:
-
-```
-my-mlops-project/
-├── configs/
-│   ├── data_config.yaml       # Data ingestion and validation config
-│   ├── feature_config.yaml    # Feature engineering config
-│   ├── training_config.yaml   # Model training config
-│   ├── deployment_config.yaml # Model deployment config
-│   └── monitoring_config.yaml # Model monitoring config
-├── notebooks/
-│   └── development.py         # Development notebooks
-├── pipeline/
-│   ├── ingest.py              # Data ingestion script
-│   ├── features.py            # Feature engineering script
-│   ├── train.py               # Model training script
-│   └── deploy.py              # Deployment script
-├── tests/
-│   └── test_pipeline.py       # Unit and integration tests
-└── README.md                  # Project documentation
-```
-
-### Integration with Databricks
-
-Connect to your Databricks workspace:
-
-```python
-from databricks_mlops.utils.auth import WorkspaceConfig, DatabricksClient
-
-# Create a type-safe workspace configuration
-workspace_config = WorkspaceConfig(
-    host="https://your-workspace.cloud.databricks.com",
-    token="dapi123456789"  # Better to use environment variables
-)
-
-# Create a client with proper type checking
-client = DatabricksClient(workspace_config)
-
-# Now you can interact with Databricks services
-dbfs_files = client.dbfs.list("/path/to/data")
-print(f"Found {len(dbfs_files)} files")
-```
-
-### Automation and CI/CD
-
-The framework supports CI/CD pipelines using Databricks access bundles:
-
-```python
-from databricks_mlops.utils.auth import AccessBundleCredentials
-from databricks_mlops.utils.deployment import DeploymentManager
-from databricks_mlops.models.config import DeploymentConfig
-
-# Load credentials from access bundle
-credentials = AccessBundleCredentials.from_bundle_file("access-bundle.yaml")
-
-# Load deployment configuration
-config = DeploymentConfig.from_yaml("configs/deployment_config.yaml")
-
-# Create deployment manager with proper authentication
-manager = DeploymentManager(credentials=credentials)
-
-# Deploy the model with type safety throughout
-deployment_id = manager.deploy(config)
-print(f"Deployment ID: {deployment_id}")
-```
-
-For more detailed usage examples, see the [Usage Guide](USAGE_GUIDE.md) and [API Reference](API_REFERENCE.md).
-
-## 📚 Documentation
-
-| Document | Description |
-|----------|-------------|
-| [**API Reference**](API_REFERENCE.md) | Comprehensive API reference for all framework components |
-| [**Usage Guide**](USAGE_GUIDE.md) | Step-by-step guide to using the framework with examples |
-| [**Architecture Overview**](ARCHITECTURE.md) | Detailed architecture and design principles |
-| [**Automation Guide**](docs/AUTOMATION.md) | Guide to CI/CD and automation with Databricks |
-| [**Access Bundles**](docs/ACCESS_BUNDLES.md) | Documentation for Databricks access bundles |
-
-## 🔍 Key Features
-
-- **Strong Type Safety**: Built from the ground up with Pydantic models and Python type annotations
-- **Modular Pipeline Components**: Standardized interfaces for data, feature, training, deployment, and monitoring pipelines
-- **Configuration-Driven**: All behavior controlled through strongly-typed YAML configurations
-- **Databricks Integration**: Seamless integration with Databricks Delta tables, MLflow, and model serving
-- **Monitoring & Drift Detection**: Built-in components for model monitoring and drift detection
-- **Validation**: Data validation at every step of the ML pipeline
-- **Type-Safe Expression Language**: Pandas-style validation expressions with full type safety
-- **Model Serving**: Strongly-typed clients for Databricks model serving endpoints
-- **Databricks Access Bundles**: Secure, typed access configuration for CI/CD workflows
-
-## MLOps Workflow Overview
-
-This framework provides end-to-end MLOps capabilities with type safety at every step, following a standardized workflow:
-
-1. **Data Ingestion & Validation** - Load data with validations using the expression language
-2. **Feature Engineering** - Create and transform features with proper typing
-3. **Model Training** - Train models with MLflow integration and type safety
-4. **Model Deployment** - Deploy models to Databricks model registry
-5. **Model Serving** - Access deployed models through type-safe serving clients
-6. **Model Monitoring** - Track drift and performance with typed metrics
-7. **CI/CD Automation** - Automate deployments with Databricks access bundles
 
 ## 📊 Data Ingestion & Validation
 
-The framework provides a strongly-typed validation system that supports Pandas-style expressions while maintaining type safety. Validation rules use a familiar syntax derived from Pandas expressions but are wrapped in our type-safe validation models.
+The framework provides a strongly-typed validation system that supports familiar syntax while maintaining complete type safety.
 
-For detailed validation options, see the [data validation documentation](docs/DATA_VALIDATION.md).
+```python
+from databricks_mlops.utils.data_validation import DataValidator
+from databricks_mlops.models.validation import ValidationRule, Severity
+import pandas as pd
 
-### Expression Syntax
+# Create validation rules with proper typing
+rules = [
+    ValidationRule(
+        name="valid_email",
+        condition="email.str.contains('@') or email is null",
+        severity=Severity.WARNING,
+        description="Email should be in valid format or null"
+    ),
+    ValidationRule(
+        name="adult_customers",
+        condition="age >= 18 or guardian_email is not null",
+        severity=Severity.ERROR,
+        description="Customers under 18 need a guardian email"
+    )
+]
 
-Validation conditions support the following operations:
+# Create validator with proper type checking
+validator = DataValidator(rules=rules)
+
+# Validate data with proper typing
+results = validator.validate(customer_data)
+print(f"Validation passed: {results.passed}")
+print(f"Found {len(results.failures)} validation failures")
+```
+
+### Expression Language
+
+The validation language supports operations with full type safety:
 
 | Category | Operations | Example |
 |----------|------------|--------|
 | **Comparison** | `==`, `!=`, `>`, `>=`, `<`, `<=`, `is null`, `is not null` | `age >= 18` |
-| **String** | `.str.contains()`, `.str.startswith()`, `.str.endswith()`, `.str.match()` | `email.str.contains('@')` |
+| **String** | `.str.contains()`, `.str.startswith()`, `.str.endswith()` | `email.str.contains('@')` |
 | **Logical** | `and`, `or`, `not` | `(age >= 18) and (country == 'US')` |
-| **Mathematical** | `+`, `-`, `*`, `/`, `%` | `total_amount == quantity * price` |
+| **Mathematical** | `+`, `-`, `*`, `/`, `%` | `total_price == quantity * unit_price` |
 | **Collection** | `in`, `not in` | `status in ['active', 'pending']` |
 
-### Examples with Type Information
-
-| Validation Rule | Purpose | Type-Safety Aspect |
-|-----------------|---------|-------------------|
-| `customer_id is not null` | Ensure required field exists | Auto-casts to proper nullable field |
-| `email.str.contains('@') or email is null` | Allow valid emails or nulls | String-specific methods only apply to string fields |
-| `tenure >= 0` | Enforce non-negative values | Numeric constraint on numeric field |
-| `total_charges >= monthly_charges` | Business rule validation | Numeric comparison with field context |
-| `date_of_birth < current_date()` | Temporal validation | Auto-converts string dates to datetime |
-| `status in ['active', 'pending', 'closed']` | Enumeration validation | Validates against allowed values |
-
-### YAML Configuration Example
-
-```yaml
-validation_rules:
-  - name: "valid_email"
-    condition: "email.str.contains('@') or email is null"
-    severity: "warning"
-    description: "Email should be valid format or null"
-    
-  - name: "adult_age"
-    condition: "age >= 18 or guardian_email is not null"
-    severity: "error"
-    description: "Users under 18 need a guardian email"
-    
-  - name: "pricing_consistency"
-    condition: "total_price == (quantity * unit_price) * (1 - discount_rate)"
-    severity: "error"
-    description: "Total price must match calculation"
-```
-
-Unlike traditional string-based validation, these expressions are parsed and type-checked at runtime, ensuring that string operations are only applied to string fields, numeric operations to numeric fields, etc. This provides the flexibility of expression-based validation with the safety of strong typing.
+All operations maintain type safety and provide meaningful error messages when operations are applied to incompatible types.
 
 ## 🧬 Feature Engineering
 
-The framework provides strongly-typed components for feature engineering, ensuring type safety throughout the transformation process. Features can be created, transformed, and validated with proper typing.
+The framework provides strongly-typed components for feature engineering with full Pydantic validation.
 
-For more advanced feature transformations, see the [feature engineering documentation](docs/FEATURE_ENGINEERING.md).
+```python
+from databricks_mlops.feature_engineering import FeatureTransformer
+from databricks_mlops.models.features import FeatureConfig, TransformationType
+import pandas as pd
 
-Key capabilities include:
-- Strongly-typed feature transformers
-- Type-safe feature pipelines
-- Pydantic models for feature configurations
+# Create type-safe feature configuration
+config = FeatureConfig(
+    name="customer_features",
+    primary_keys=["customer_id"],
+    timestamp_column="event_date",
+    transforms={
+        "tenure_months": TransformationType.NUMERIC_FILLNA,
+        "has_phone_service": TransformationType.BOOLEAN_ENCODE,
+        "monthly_charges_bin": {
+            "type": TransformationType.BINNING,
+            "source_column": "monthly_charges",
+            "bins": [0, 50, 100, 150, float('inf')],
+            "labels": ["low", "medium", "high", "premium"]
+        }
+    }
+)
+
+# Create transformer with proper type validation
+transformer = FeatureTransformer(config=config)
+
+# Transform features with type safety
+transformed_features = transformer.fit_transform(customer_data)
+
+# Save to Feature Store with proper typing
+transformer.save_to_feature_store(
+    feature_table_name="customer_features",
+    database_name="ml_catalog"
+)
+```
+
+The feature engineering module supports:
+- Vectorized transformations with proper typing
 - Integration with Databricks Feature Store
+- Versioned feature groups with lineage tracking
+- Automated feature documentation and metadata
 
 ## 🧠 Model Training
 
-Model training components ensure type safety while integrating seamlessly with MLflow for experiment tracking and model management. The framework provides typed interfaces for training configuration, hyperparameter tuning, and model evaluation.
+The framework provides type-safe model training with seamless MLflow integration.
 
-For advanced training configurations, see the [detailed training documentation](docs/MODEL_TRAINING.md).
+```python
+from databricks_mlops.model_training import ModelTrainer
+from databricks_mlops.models.training import TrainingConfig, ModelType, MetricConfig
+from sklearn.ensemble import RandomForestClassifier
 
-Key capabilities include:
-- Type-safe model training pipelines
-- Strongly-typed experiment tracking
-- MLflow integration with proper typing
-- Cross-validation with type safety
+# Define training configuration with proper typing
+config = TrainingConfig(
+    model_type=ModelType.CLASSIFICATION,
+    model_name="customer_churn_predictor",
+    target_column="churn",
+    feature_columns=["tenure", "monthly_charges", "total_charges"],
+    categorical_columns=["contract_type", "payment_method"],
+    primary_metric="f1_score",
+    additional_metrics=["accuracy", "precision", "recall"],
+    hyperparameters={
+        "n_estimators": 100,
+        "max_depth": 10,
+        "min_samples_split": 5
+    }
+)
+
+# Create trainer with proper typing
+trainer = ModelTrainer(config=config)
+
+# Train model with MLflow tracking
+model, metrics = trainer.train(
+    train_data=train_df,
+    validation_data=val_df,
+    model_instance=RandomForestClassifier()
+)
+
+# Register model in MLflow with proper typing
+model_uri = trainer.register_model(
+    model=model,
+    stage="Staging" 
+)
+
+print(f"Model registered at: {model_uri}")
+print(f"Validation F1: {metrics['f1_score']:.4f}")
+```
+
+Model training includes:
+- Automated MLflow experiment tracking
+- Hyperparameter optimization
+- Cross-validation with proper metrics
+- Model serialization and versioning
 
 ## 🚀 Model Deployment
 
-The framework provides type-safe deployment of models to Databricks Model Registry and serving endpoints. Deployment configurations are validated with Pydantic models, ensuring all required fields are present and properly typed.
+The framework enables type-safe model deployment to Databricks Model Registry and serving endpoints.
 
-For detailed deployment options, see the [model deployment documentation](docs/DEPLOYMENT.md).
+```python
+from databricks_mlops.deployment import ModelDeployer
+from databricks_mlops.models.deployment import DeploymentConfig, ServingConfig
+from databricks_mlops.utils.auth import WorkspaceConfig
+
+# Create workspace configuration
+workspace = WorkspaceConfig(
+    host="https://your-workspace.cloud.databricks.com",
+    token="${DATABRICKS_TOKEN}"
+)
+
+# Create deployment configuration with proper typing
+config = DeploymentConfig(
+    model_name="customer_churn_predictor",
+    model_uri="models:/customer_churn_predictor/Staging",
+    description="Predicts customer churn probability",
+    serving=ServingConfig(
+        endpoint_name="churn-predictor-endpoint",
+        instance_type="Standard_DS3_v2",
+        scale_to_zero_enabled=True,
+        min_instances=1,
+        max_instances=4
+    ),
+    tags={
+        "team": "customer_analytics",
+        "use_case": "churn_prediction",
+        "version": "1.0.0"
+    }
+)
+
+# Create deployer with proper typing
+deployer = ModelDeployer(workspace=workspace)
+
+# Deploy model with type safety
+endpoint = deployer.deploy_model(config=config)
+
+print(f"Model deployed to endpoint: {endpoint.name}")
+print(f"Endpoint URL: {endpoint.url}")
+```
+
+For detailed deployment options including blue-green deployments, multi-environment strategies, and deployment automation, see the [deployment documentation](docs/DEPLOYMENT.md).
 
 ## 🌐 Model Serving
 
-The framework provides strongly-typed clients for interacting with Databricks model serving endpoints, ensuring type safety throughout the request-response cycle. The focus is on classical machine learning tasks like classification and regression.
-
-For more advanced serving configurations, see the [detailed model serving guide](docs/MODEL_SERVING.md).
-
-### Example: Model Serving for Tabular Data
+The framework provides strongly-typed clients for interacting with deployed model endpoints.
 
 ```python
-from databricks_mlops.utils.model_serving import (
-    TabularModelClient, EndpointCredentials, AuthType
-)
+from databricks_mlops.model_serving import ModelClient
+from databricks_mlops.models.serving import ClientConfig, AuthConfig, AuthType
 import pandas as pd
 
-# Create strongly-typed credentials
-credentials = EndpointCredentials(
-    auth_type=AuthType.TOKEN,
-    token="your-databricks-token"
+# Create type-safe client configuration
+client_config = ClientConfig(
+    workspace_url="https://your-workspace.cloud.databricks.com",
+    auth=AuthConfig(
+        auth_type=AuthType.TOKEN,
+        token="${DATABRICKS_TOKEN}"
+    ),
+    retry_config={
+        "max_retries": 3,
+        "backoff_factor": 0.5,
+        "timeout_seconds": 30
+    }
 )
 
-# Initialize the client with proper typing
-client = TabularModelClient(
-    workspace_url="https://your-workspace.cloud.databricks.com",
-    credentials=credentials
-)
+# Create client with proper typing
+client = ModelClient(config=client_config)
 
 # Prepare feature data with correct types
-feature_data = pd.DataFrame({
+features = pd.DataFrame({
     "tenure": [12, 24, 36],
     "monthly_charges": [50.0, 70.0, 90.0],
     "contract_type": ["Month-to-month", "One year", "Two year"],
@@ -305,67 +350,138 @@ feature_data = pd.DataFrame({
 })
 
 # Get predictions with full type safety
-predictions = client.predict(
-    endpoint_name="customer-churn-classifier",
-    features=feature_data
+response = client.predict(
+    endpoint_name="churn-predictor-endpoint",
+    features=features
 )
 
-# Process results with proper DataFrame typing
-churn_probabilities = predictions['probability']
-print(f"Predicted churn probability: {churn_probabilities}")
+# Process results with proper typing
+probabilities = response.predictions["probability"]
+churn_class = response.predictions["class"]
+latency_ms = response.metadata.latency_ms
+
+print(f"Predictions processed in {latency_ms}ms")
+print(f"Churn probabilities: {probabilities}")
 ```
 
-### Key Benefits
-
-- **Type Safety**: All interactions with endpoints maintain proper data types
-- **Credential Management**: Secure handling of authentication tokens
-- **Error Handling**: Detailed error messages with proper typing
-- **Retry Logic**: Smart retries for transient failures
-- **Production Integration**: Seamless connection to production ML endpoints
+The serving module provides:
+- Secure authentication with multiple methods
+- Batching for high-throughput prediction
+- Connection pooling for performance
+- Comprehensive error handling
+- Request/response logging and metrics
 
 ## 📈 Model Monitoring
 
-The framework provides type-safe monitoring for deployed models, tracking drift in data and predictions, as well as model performance metrics. Monitoring configurations are validated with Pydantic models, ensuring proper typing throughout.
+The framework provides comprehensive model monitoring with drift detection and performance tracking.
 
-For detailed monitoring metrics and setup, see the [detailed monitoring documentation](docs/MONITORING.md).
+```python
+from databricks_mlops.monitoring import ModelMonitor
+from databricks_mlops.models.monitoring import MonitoringConfig, DriftConfig, AlertConfig
+from databricks_mlops.utils.auth import WorkspaceConfig
 
-Key capabilities include:
-- Data drift detection with type safety
-- Model performance tracking
-- Alerting with proper validation
-- Integration with Databricks monitoring tools
+# Create workspace configuration
+workspace = WorkspaceConfig(
+    host="https://your-workspace.cloud.databricks.com",
+    token="${DATABRICKS_TOKEN}"
+)
 
-For more advanced usage of any component, see the [API Reference](API_REFERENCE.md) for complete documentation.
+# Create monitoring configuration with proper typing
+config = MonitoringConfig(
+    model_name="customer_churn_predictor",
+    reference_dataset="dbfs:/reference/churn_baseline.delta",
+    metrics=["accuracy", "f1_score", "precision", "recall"],
+    feature_drift=DriftConfig(
+        features=["tenure", "monthly_charges", "total_charges"],
+        drift_methods=["wasserstein", "ks_test"],
+        threshold=0.05
+    ),
+    alerts=AlertConfig(
+        email_recipients=["data-science@example.com"],
+        slack_webhook="https://hooks.slack.com/services/XXX/YYY/ZZZ",
+        thresholds={
+            "accuracy": 0.85,
+            "drift_score": 0.10
+        }
+    ),
+    schedule="0 */6 * * *"  # Every 6 hours
+)
 
-## 📲 Installation
+# Create monitor with proper typing
+monitor = ModelMonitor(workspace=workspace)
 
-We recommend using [uv](https://github.com/astral-sh/uv) for faster, more reliable Python package management:
+# Set up monitoring with type safety
+monitoring_job = monitor.setup_monitoring(config=config)
 
-```bash
-# From PyPI
-uv pip install databricks-mlops
-
-# From GitHub
-uv pip install git+https://github.com/gonnect-uk/databricks-mlops.git
-
-# Development installation
-git clone https://github.com/gonnect-uk/databricks-mlops.git
-cd databricks-mlops
-uv pip install -e .
-
-# Install with all dependencies
-uv pip install "databricks-mlops[all]"
-
-# Install specific components
-uv pip install "databricks-mlops[data,feature-engineering,model-training]"  # ML components
-uv pip install "databricks-mlops[deployment,monitoring]"  # Production components
+# Get current monitoring status
+status = monitor.get_status(model_name="customer_churn_predictor")
+print(f"Monitoring job: {monitoring_job.job_id}")
+print(f"Last run status: {status.last_run_status}")
+print(f"Current drift score: {status.metrics.drift_score:.4f}")
 ```
 
-You can also use traditional pip if uv is not available:
+The monitoring module includes:
+- Data and prediction drift detection
+- Performance metrics tracking
+- Automated alerting on thresholds
+- Scheduled monitoring jobs
+- Detailed monitoring dashboards
 
-```bash
-pip install databricks-mlops
+## Project Structure
+
+A typical MLOps project using this framework looks like:
+
 ```
+project/
+├── configs/                   # Configuration files
+│   ├── data_config.yaml       # Data validation rules
+│   ├── feature_config.yaml    # Feature transformations
+│   ├── training_config.yaml   # Model training settings
+│   ├── deployment_config.yaml # Deployment parameters
+│   └── monitoring_config.yaml # Monitoring settings
+├── pipeline/                  # Pipeline components
+│   ├── ingest.py              # Data ingestion script
+│   ├── features.py            # Feature engineering 
+│   ├── train.py               # Model training
+│   ├── deploy.py              # Model deployment 
+│   └── monitor.py             # Model monitoring
+├── notebooks/                 # Databricks notebooks
+│   └── development.ipynb      # Development notebook
+├── tests/                     # Tests for all components
+│   ├── test_data.py           # Data validation tests
+│   ├── test_features.py       # Feature tests
+│   ├── test_training.py       # Training tests
+│   └── test_e2e.py            # End-to-end tests
+├── README.md                  # Project documentation
+└── pyproject.toml            # Dependencies and build
+```
+
+## Type Safety Philosophy
+
+This framework follows these principles for maximum reliability:
+
+- **Pydantic Everywhere**: All configurations and models use Pydantic
+- **No String Parsing**: All expressions parsed into typed structures
+- **Runtime Type Validation**: Operations validate types at execution time
+- **Explicit Error Handling**: Specific exceptions with clear messages
+- **Documentation in Types**: Type hints document the code
+
+These principles ensure your ML pipelines are reliable and maintainable.
+
+## Learn More
+
+For more details on using the framework, visit the following documentation:
+
+- [Usage Guide](USAGE_GUIDE.md) - Step-by-step tutorial
+- [API Reference](API_REFERENCE.md) - Detailed class and method documentation
+- [Deployment Guide](docs/DEPLOYMENT.md) - Model deployment strategies
+- [Model Serving](docs/MODEL_SERVING.md) - Serving model endpoints
+- [Monitoring](docs/MONITORING.md) - Drift detection and performance tracking
+- [CI/CD Automation](docs/AUTOMATION.md) - Continuous integration and deployment
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 💾 Examples
 
@@ -381,68 +497,9 @@ The `examples/` directory contains practical implementations showcasing the fram
 | [**Expression Validation**](examples/expression_validation_example.py) | Type-safe validation expressions with Pandas-style syntax |
 | [**Integration Tests**](examples/integration_test.py) | Tests demonstrating component interactions |
 
-## 🔐 Type Safety Philosophy
 
-This framework is built on a foundation of aggressive type safety and pure Pydantic models:
 
-- **No Direct JSON Handling**: All data structures are proper Pydantic models
-- **No String Manipulation**: Proper type casting and validation instead of string parsing
-- **No `hasattr()` Checks**: Explicit model attributes with proper defaults
-- **Domain-Driven Design**: Components map directly to MLOps domain concepts
-- **Specialized Exceptions**: Clear error types instead of generic exceptions
-- **Functional Approach**: Helper methods and immutable data where possible
-- **Robust Fallbacks**: Proper default values and clear error handling
 
-Every component in the framework follows this philosophy, ensuring maximum type safety with minimal runtime errors.
-
-## 📊 Data Validation Expression Language
-
-The framework provides a strongly-typed validation system that supports Pandas-style expressions while maintaining type safety. Validation rules use a familiar syntax derived from Pandas expressions but are wrapped in our type-safe validation models.
-
-### Expression Syntax
-
-Validation conditions support the following operations:
-
-| Category | Operations | Example |
-|----------|------------|--------|
-| **Comparison** | `==`, `!=`, `>`, `>=`, `<`, `<=`, `is null`, `is not null` | `age >= 18` |
-| **String** | `.str.contains()`, `.str.startswith()`, `.str.endswith()`, `.str.match()` | `email.str.contains('@')` |
-| **Logical** | `and`, `or`, `not` | `(age >= 18) and (country == 'US')` |
-| **Mathematical** | `+`, `-`, `*`, `/`, `%` | `total_amount == quantity * price` |
-| **Collection** | `in`, `not in` | `status in ['active', 'pending']` |
-
-### Examples with Type Information
-
-| Validation Rule | Purpose | Type-Safety Aspect |
-|-----------------|---------|-------------------|
-| `customer_id is not null` | Ensure required field exists | Auto-casts to proper nullable field |
-| `email.str.contains('@') or email is null` | Allow valid emails or nulls | String-specific methods only apply to string fields |
-| `tenure >= 0` | Enforce non-negative values | Numeric constraint on numeric field |
-| `total_charges >= monthly_charges` | Business rule validation | Numeric comparison with field context |
-| `date_of_birth < current_date()` | Temporal validation | Auto-converts string dates to datetime |
-| `status in ['active', 'pending', 'closed']` | Enumeration validation | Validates against allowed values |
-
-### YAML Configuration Example
-
-```yaml
-validation_rules:
-  - name: "valid_email"
-    condition: "email.str.contains('@') or email is null"
-    severity: "warning"
-    description: "Email should be valid format or null"
-    
-  - name: "adult_age"
-    condition: "age >= 18 or guardian_email is not null"
-    severity: "error"
-    description: "Users under 18 need a guardian email"
-    
-  - name: "pricing_consistency"
-    condition: "total_price == (quantity * unit_price) * (1 - discount_rate)"
-    severity: "error"
-    description: "Total price must match calculation"
-```
-
-Unlike traditional string-based validation, these expressions are parsed and type-checked at runtime, ensuring that string operations are only applied to string fields, numeric operations to numeric fields, etc. This provides the flexibility of expression-based validation with the safety of strong typing.
 
 ## 📋 YAML Configuration Reference
 
