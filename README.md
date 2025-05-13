@@ -47,6 +47,8 @@ A comprehensive, type-safe MLOps framework for Databricks that follows best prac
 | [**API Reference**](API_REFERENCE.md) | Comprehensive API reference for all framework components |
 | [**Usage Guide**](USAGE_GUIDE.md) | Step-by-step guide to using the framework with examples |
 | [**Architecture Overview**](ARCHITECTURE.md) | Detailed architecture and design principles |
+| [**Automation Guide**](docs/AUTOMATION.md) | Guide to CI/CD and automation with Databricks |
+| [**Access Bundles**](docs/ACCESS_BUNDLES.md) | Documentation for Databricks access bundles |
 
 ## 🔍 Key Features
 
@@ -58,6 +60,7 @@ A comprehensive, type-safe MLOps framework for Databricks that follows best prac
 - **Validation**: Data validation at every step of the ML pipeline
 - **Type-Safe Expression Language**: Pandas-style validation expressions with full type safety
 - **Model Serving**: Strongly-typed clients for Databricks model serving endpoints
+- **Databricks Access Bundles**: Secure, typed access configuration for CI/CD workflows
 
 ## MLOps Workflow Overview
 
@@ -69,10 +72,13 @@ This framework provides end-to-end MLOps capabilities with type safety at every 
 4. **Model Deployment** - Deploy models to Databricks model registry
 5. **Model Serving** - Access deployed models through type-safe serving clients
 6. **Model Monitoring** - Track drift and performance with typed metrics
+7. **CI/CD Automation** - Automate deployments with Databricks access bundles
 
 ## 📊 Data Ingestion & Validation
 
 The framework provides a strongly-typed validation system that supports Pandas-style expressions while maintaining type safety. Validation rules use a familiar syntax derived from Pandas expressions but are wrapped in our type-safe validation models.
+
+For detailed validation options, see the [data validation documentation](docs/DATA_VALIDATION.md).
 
 ### Expression Syntax
 
@@ -123,6 +129,8 @@ Unlike traditional string-based validation, these expressions are parsed and typ
 
 The framework provides strongly-typed components for feature engineering, ensuring type safety throughout the transformation process. Features can be created, transformed, and validated with proper typing.
 
+For more advanced feature transformations, see the [feature engineering documentation](docs/FEATURE_ENGINEERING.md).
+
 Key capabilities include:
 - Strongly-typed feature transformers
 - Type-safe feature pipelines
@@ -132,6 +140,8 @@ Key capabilities include:
 ## 🧠 Model Training
 
 Model training components ensure type safety while integrating seamlessly with MLflow for experiment tracking and model management. The framework provides typed interfaces for training configuration, hyperparameter tuning, and model evaluation.
+
+For advanced training configurations, see the [detailed training documentation](docs/MODEL_TRAINING.md).
 
 Key capabilities include:
 - Type-safe model training pipelines
@@ -143,9 +153,13 @@ Key capabilities include:
 
 The framework provides type-safe deployment of models to Databricks Model Registry and serving endpoints. Deployment configurations are validated with Pydantic models, ensuring all required fields are present and properly typed.
 
+For detailed deployment options, see the [model deployment documentation](docs/DEPLOYMENT.md).
+
 ## 🌐 Model Serving
 
 The framework provides strongly-typed clients for interacting with Databricks model serving endpoints, ensuring type safety throughout the request-response cycle. The focus is on classical machine learning tasks like classification and regression.
+
+For more advanced serving configurations, see the [detailed model serving guide](docs/MODEL_SERVING.md).
 
 ### Example: Model Serving for Tabular Data
 
@@ -197,6 +211,8 @@ print(f"Predicted churn probability: {churn_probabilities}")
 ## 📈 Model Monitoring
 
 The framework provides type-safe monitoring for deployed models, tracking drift in data and predictions, as well as model performance metrics. Monitoring configurations are validated with Pydantic models, ensuring proper typing throughout.
+
+For detailed monitoring metrics and setup, see the [detailed monitoring documentation](docs/MONITORING.md).
 
 Key capabilities include:
 - Data drift detection with type safety
